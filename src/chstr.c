@@ -58,9 +58,10 @@ int ch_string_center(const string s, size_t w, string *out) {
     *out = NULL;
     size_t sw = ch_string_width(s);
     if (sw > w) return -1;
-    int p = (w - sw) / 2;
+    int l = (w - sw) / 2;
+    int r = w - l - sw;
 
-    return asprintf(out, "%*s%s", p, "", s);
+    return asprintf(out, "%*s%s%*s", l, "", s, r, "");
 }
 
 bool ch_string_truncate(string s, size_t maxcols) {

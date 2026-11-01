@@ -40,7 +40,7 @@ START_TEST(test_string_center)
     string test_str = strdup("🐾 中野 梓");
     string centered = NULL;
     ck_assert(ch_string_center(test_str, 24, &centered) > 0);
-    ck_assert_str_eq(centered, "       🐾 中野 梓");
+    ck_assert_str_eq(centered, "       🐾 中野 梓       ");
     ch_free_string(&centered);
     ch_free_string(&test_str);
 }
