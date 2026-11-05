@@ -56,6 +56,9 @@ bool ch_starts_with(const char *s, const char *search);
  *
  * Returns pointer to string on success, NULL otherwise. The pointer returned
  * must be released by the caller.
+ *
+ * In case of failure, `errno` is set either to `EFBIG` when file size exceeds
+ * limit, or it's set by standard library functions.
  */
 char *ch_string_from_file(const char *path, size_t *max_size);
 

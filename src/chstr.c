@@ -1,18 +1,8 @@
 #include "chstr.h"
-
 #include <errno.h>
 #include <limits.h>
-#include <stdbool.h>
-#include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <unicase.h>
-#include <unistr.h>
-#include <unitypes.h>
-#include <uniwidth.h>
-
-#include <klib/kvec.h>
 
 bool ch_starts_with(const char *s, const char *search) {
     size_t min_len = strlen(search);
@@ -86,34 +76,22 @@ char *ch_string_from_file(const char *path, size_t *max_size) {
     if (!path) return NULL;
 
     FILE *fp = fopen(path, "r");
-    if (!fp) {
-        perror("fopen");
-        return NULL;
-    }
+    if (!fp) return NULL;
 
     char *contents = NULL;
 
     size_t cap = (max_size && *max_size < SIZE_MAX - 1) ? *max_size : SIZE_MAX - 1;
-    if (fseek(fp, 0L, SEEK_END) != 0) {
-        perror("fseek");
-        goto error;
-    }
+    if (fseek(fp, 0L, SEEK_END) != 0) goto error;
 
     long file_size = ftell(fp);
-    if (file_size == -1) {
-        perror("ftell");
-        goto error;
-    }
+    if (file_size == -1) goto error;
 
     if ((uintmax_t)file_size >= (uintmax_t)cap) {
         errno = EFBIG;
         goto error;
     }
 
-    if (fseek(fp, 0L, SEEK_SET) != 0) {
-        perror("fseek");
-        goto error;
-    }
+    if (fseek(fp, 0L, SEEK_SET) != 0) goto error;
 
     contents = malloc((size_t)file_size + 1);
     if (!contents) goto error;
@@ -154,10 +132,7 @@ void ch_string_array_destroy(string_array *arr) {
 
 bool ch_read_lines(const char *path, string_array *out) {
     FILE *fp = fopen(path, "r");
-    if (!fp) {
-        perror("fopen");
-        return false;
-    }
+    if (!fp) return false;
 
     char *line = NULL;
     size_t max_size = 0;
