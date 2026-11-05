@@ -21,9 +21,9 @@ START_TEST(test_string_case)
     char *upper = ch_string_to_uppercase(test_str);
     ck_assert(upper);
     ck_assert_str_eq(upper, "ZAŻÓŁĆ GĘŚLĄ ŻÓŁĆ");
-    ch_free_string(&upper);
-    ch_free_string(&lower);
-    ch_free_string(&test_str);
+    free(upper);
+    free(lower);
+    free(test_str);
 }
 END_TEST
 
@@ -41,8 +41,8 @@ START_TEST(test_string_center)
     char *centered = NULL;
     ck_assert(ch_string_center(test_str, 24, &centered) > 0);
     ck_assert_str_eq(centered, "       🐾 中野 梓       ");
-    ch_free_string(&centered);
-    ch_free_string(&test_str);
+    free(centered);
+    free(test_str);
 }
 END_TEST
 
@@ -55,19 +55,19 @@ START_TEST(test_string_truncate)
     truncated = ch_string_truncate(test_str, 5);
     ck_assert(truncated);
     ck_assert_str_eq(test_str, "Hello");
-    ch_free_string(&test_str);
+    free(test_str);
 
     test_str = strdup("Hello, World!");
     truncated = ch_string_truncate(test_str, 128);
     ck_assert(!truncated);
     ck_assert_str_eq(test_str, "Hello, World!");
-    ch_free_string(&test_str);
+    free(test_str);
 
     test_str = strdup("なかの あずさ");
     truncated = ch_string_truncate(test_str, 5);
     ck_assert(truncated);
     ck_assert_str_eq(test_str, "なか");
-    ch_free_string(&test_str);
+    free(test_str);
 }
 END_TEST
 
@@ -108,13 +108,13 @@ END_TEST
 START_TEST(test_string_from_file)
 {
     const char * test_str = "平沢 唯（ひらさわ ゆい）\n田井中 律（たいなか りつ）\n秋山 澪（あきやま みお）\n琴吹 紬（ことぶき つむぎ）\n中野 梓（なかの あずさ）\n";
-    char *contents = ch_string_from_file("../testfile.txt", NULL);
-    ck_assert(contents != NULL);
-    ck_assert_str_eq(contents, test_str);
-    ch_free_string(&contents);
-    contents = ch_string_from_file("does-not-exist.txt", NULL);
-    ck_assert(contents == NULL);
-    ch_free_string(&contents);
+    char *contents_1 = ch_string_from_file("../testfile.txt", NULL);
+    ck_assert(contents_1 != NULL);
+    ck_assert_str_eq(contents_1, test_str);
+    free(contents_1);
+    char *contents_2 = ch_string_from_file("does-not-exist.txt", NULL);
+    ck_assert(contents_2 == NULL);
+    free(contents_2);
 }
 END_TEST
 
