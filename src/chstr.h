@@ -1,6 +1,5 @@
 #pragma once
 
-#include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -82,12 +81,10 @@ string_array *ch_string_array_new(void);
 void ch_string_array_destroy(string_array **arr);
 
 static inline size_t ch_string_array_len(const string_array *arr) {
-    assert(arr);
     return arr ? kv_size(arr->data) : 0;
 }
 
 static inline char *ch_string_array_at(const string_array *arr, size_t i) {
-    assert(arr);
     return (arr && i < kv_size(arr->data)) ? kv_A(arr->data, i) : NULL;
 }
 

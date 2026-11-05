@@ -3,7 +3,6 @@
 #include "dbg.h"
 #include "deferred.h"
 
-#include <assert.h>
 #include <errno.h>
 #include <limits.h>
 #include <stdbool.h>
@@ -19,11 +18,8 @@
 #include <klib/kvec.h>
 
 bool ch_starts_with(const char *s, const char *search) {
-    assert(s && search);
-
     size_t min_len = strlen(search);
     if (strlen(s) < min_len) return false;
-
     return strncmp(s, search, min_len) == 0;
 }
 
