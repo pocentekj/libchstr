@@ -127,7 +127,7 @@ START_TEST(test_read_lines)
     ck_assert(ch_string_array_len(lines) == 5);
     ck_assert_str_eq(ch_string_array_at(lines, 0), "平沢 唯（ひらさわ ゆい）");
 
-    ch_string_array_destroy(&lines);
+    ch_string_array_destroy(lines);
 }
 END_TEST
 

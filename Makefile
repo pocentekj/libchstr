@@ -1,7 +1,7 @@
 CC := gcc
 BUILDDIR := build
 
-.PHONY: all setup format dev check clean
+.PHONY: all setup dev check clean
 
 all: check
 

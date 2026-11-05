@@ -46,6 +46,7 @@ char *ch_string_to_uppercase(const char *s) { return ch_string_case(s, u8_touppe
 int ch_string_center(const char *s, size_t w, char **out) {
     if (!s || !out || w > INT_MAX) return -1;
     *out = NULL;
+
     size_t sw = ch_string_width(s);
     if (sw > w) return -1;
     int l = (w - sw) / 2;
@@ -139,16 +140,16 @@ string_array *ch_string_array_new(void) {
     return arr;
 }
 
-void ch_string_array_destroy(string_array **arr) {
-    if (!arr || !*arr) return;
+void ch_string_array_destroy(string_array *arr) {
+    if (!arr) return;
 
-    for (size_t i = 0; i < kv_size((*arr)->data); i++) {
-        free(kv_A((*arr)->data, i));
+    for (size_t i = 0; i < kv_size(arr->data); i++) {
+        free(kv_A(arr->data, i));
     }
 
-    kv_destroy((*arr)->data);
-    free(*arr);
-    *arr = NULL;
+    kv_destroy(arr->data);
+    free(arr);
+    arr = NULL;
 }
 
 bool ch_read_lines(const char *path, string_array *out) {

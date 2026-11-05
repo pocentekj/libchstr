@@ -10,15 +10,6 @@
 #include <klib/kvec.h>
 
 /**
- * This function takes pointer to string - it's useful for `deferred` callback.
- */
-static inline void ch_free_string(char **s) {
-    if (!s || !*s) return;
-    free(*s);
-    *s = NULL;
-}
-
-/**
  * Returns width as visible columns.
  */
 static inline size_t ch_string_width(const char *s) {
@@ -61,10 +52,10 @@ bool ch_starts_with(const char *s, const char *search);
  *
  * If `max_size` is provided, it will be used as the upper size limits for files
  * that should be loaded. This function will reject bigger files and return NULL.
- * If `max_size` is NULL, the upper limit will be set to SIZE_MAX -1.
+ * If `max_size` is NULL, the upper limit will be set to SIZE_MAX - 1.
  *
- * Returns pointer to string on success, NULL otherwise. Note, that the pointer
- * returned must be released by calling `free` (or `free_string(&ptr)`).
+ * Returns pointer to string on success, NULL otherwise. The pointer returned
+ * must be released by the caller.
  */
 char *ch_string_from_file(const char *path, size_t *max_size);
 
@@ -73,12 +64,7 @@ typedef struct {
 } string_array;
 
 string_array *ch_string_array_new(void);
-
-/**
- * This function takes pointer to pointer as an argument - to be used as
- * a callback for `deferred` macro.
- */
-void ch_string_array_destroy(string_array **arr);
+void ch_string_array_destroy(string_array *arr);
 
 static inline size_t ch_string_array_len(const string_array *arr) {
     return arr ? kv_size(arr->data) : 0;
@@ -98,7 +84,7 @@ bool ch_read_lines(const char *path, string_array *out);
 /**
  * A set of functions to parse numbers from strings. All of them returns `true`
  * on successful conversion and `false` on error, and store output in `dest` of
- * appropriate type.
+ * appropriate type. `errno` may be set by underlying functions.
  */
 bool ch_parse_double(const char *s, double *dest);
 bool ch_parse_ll(const char *s, long long *dest);
