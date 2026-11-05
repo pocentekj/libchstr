@@ -11,9 +11,6 @@ $(BUILDDIR)/build.ninja:
 setup:
 	CC="$(CC)" meson setup --reconfigure "$(BUILDDIR)"
 
-format:
-	find . -type f \( -name '*.c' -o -name '*.h' \) -print0 | xargs -0 clang-format -i
-
 dev: $(BUILDDIR)/build.ninja
 	meson compile -C "$(BUILDDIR)"
 
