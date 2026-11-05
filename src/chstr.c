@@ -18,7 +18,7 @@
 
 #include <klib/kvec.h>
 
-bool ch_starts_with(const string s, const string search) {
+bool ch_starts_with(const char *s, const char *search) {
     assert(s && search);
 
     size_t min_len = strlen(search);
@@ -29,7 +29,7 @@ bool ch_starts_with(const string s, const string search) {
 
 typedef uint8_t *(*case_fn)(const uint8_t *, size_t, const char *, uninorm_t, uint8_t *, size_t *);
 
-static string ch_string_case(const string s, case_fn convert) {
+static char *ch_string_case(const char *s, case_fn convert) {
     const uint8_t *u8 = (const uint8_t *)s;
     size_t out_len = 0;
 
@@ -43,17 +43,14 @@ static string ch_string_case(const string s, case_fn convert) {
     }
 
     terminated[out_len] = '\0';
-    return (string)terminated;
+    return (char *)terminated;
 }
 
-string ch_string_to_lowercase(const string s) { return ch_string_case(s, u8_tolower); }
+char *ch_string_to_lowercase(const char *s) { return ch_string_case(s, u8_tolower); }
 
-string ch_string_to_uppercase(const string s) { return ch_string_case(s, u8_toupper); }
+char *ch_string_to_uppercase(const char *s) { return ch_string_case(s, u8_toupper); }
 
-int ch_string_center(const string s, size_t w, string *out) {
-    assert(s);
-    assert(out);
-
+int ch_string_center(const char *s, size_t w, char **out) {
     if (!s || !out || w > INT_MAX) return -1;
     *out = NULL;
     size_t sw = ch_string_width(s);
@@ -64,9 +61,7 @@ int ch_string_center(const string s, size_t w, string *out) {
     return asprintf(out, "%*s%s%*s", l, "", s, r, "");
 }
 
-bool ch_string_truncate(string s, size_t maxcols) {
-    assert(s);
-
+bool ch_string_truncate(char *s, size_t maxcols) {
     const uint8_t *txt = (const uint8_t *)s;
     size_t remaining = u8_strlen(txt);
     size_t offset = 0, columns = 0;
@@ -93,9 +88,7 @@ bool ch_string_truncate(string s, size_t maxcols) {
     return true;
 }
 
-string ch_string_from_file(const string path, size_t *max_size) {
-    assert(path);
-
+char *ch_string_from_file(const char *path, size_t *max_size) {
     if (!path) return NULL;
 
     deferred(ch_close_fp) FILE *fp = fopen(path, "r");
@@ -115,7 +108,7 @@ string ch_string_from_file(const string path, size_t *max_size) {
 
     check_ret(fseek(fp, 0L, SEEK_SET) == 0, NULL, "fseek()");
 
-    string contents = malloc((size_t)file_size + 1);
+    char *contents = malloc((size_t)file_size + 1);
     check_ret(contents, NULL, "Out of memory");
 
     size_t nbytes = fread(contents, 1, (size_t)file_size, fp);
@@ -149,29 +142,27 @@ void ch_string_array_destroy(string_array **arr) {
     *arr = NULL;
 }
 
-bool ch_read_lines(string path, string_array *out) {
-    assert(path && out);
-
+bool ch_read_lines(const char *path, string_array *out) {
     deferred(ch_close_fp) FILE *fp = fopen(path, "r");
     check_ret(fp, false, "Failed to open '%s'", path);
 
-    deferred(ch_free_string) string line = NULL;
+    deferred(ch_free_string) char *line = NULL;
     size_t max_size = 0;
     ssize_t nread = 0;
 
     while ((nread = getline(&line, &max_size, fp)) != -1) {
         if (nread > 0 && line[nread - 1] == '\n') line[--nread] = '\0';
 
-        string tmp = strdup(line);
+        char *tmp = strdup(line);
         check_ret(tmp, false, "Out of memory");
 
-        kv_push(string, out->data, tmp);
+        kv_push(char *, out->data, tmp);
     }
 
     return true;
 }
 
-bool ch_parse_double(const string s, double *dest) {
+bool ch_parse_double(const char *s, double *dest) {
     if (!s || !dest) return false;
 
     errno = 0;
@@ -188,7 +179,7 @@ bool ch_parse_double(const string s, double *dest) {
     return true;
 }
 
-bool ch_parse_ll(const string s, long long *dest) {
+bool ch_parse_ll(const char *s, long long *dest) {
     if (!s || !dest) return false;
 
     errno = 0;
@@ -205,7 +196,7 @@ bool ch_parse_ll(const string s, long long *dest) {
     return true;
 }
 
-bool ch_parse_int(const string s, int *dest) {
+bool ch_parse_int(const char *s, int *dest) {
     if (!s || !dest) return false;
 
     long long val = 0;

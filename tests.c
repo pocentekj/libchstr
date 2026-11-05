@@ -14,11 +14,11 @@ END_TEST
 
 START_TEST(test_string_case)
 {
-    string test_str = strdup("Zażółć gęślą żółć");
-    string lower = ch_string_to_lowercase(test_str);
+    char *test_str = strdup("Zażółć gęślą żółć");
+    char *lower = ch_string_to_lowercase(test_str);
     ck_assert(lower);
     ck_assert_str_eq(lower, "zażółć gęślą żółć");
-    string upper = ch_string_to_uppercase(test_str);
+    char *upper = ch_string_to_uppercase(test_str);
     ck_assert(upper);
     ck_assert_str_eq(upper, "ZAŻÓŁĆ GĘŚLĄ ŻÓŁĆ");
     ch_free_string(&upper);
@@ -37,8 +37,8 @@ END_TEST
 
 START_TEST(test_string_center)
 {
-    string test_str = strdup("🐾 中野 梓");
-    string centered = NULL;
+    char *test_str = strdup("🐾 中野 梓");
+    char *centered = NULL;
     ck_assert(ch_string_center(test_str, 24, &centered) > 0);
     ck_assert_str_eq(centered, "       🐾 中野 梓       ");
     ch_free_string(&centered);
@@ -48,7 +48,7 @@ END_TEST
 
 START_TEST(test_string_truncate)
 {
-    string test_str = NULL;
+    char *test_str = NULL;
     bool truncated = false;
 
     test_str = strdup("Hello, World!");
@@ -107,8 +107,8 @@ END_TEST
 
 START_TEST(test_string_from_file)
 {
-    const string test_str = "平沢 唯（ひらさわ ゆい）\n田井中 律（たいなか りつ）\n秋山 澪（あきやま みお）\n琴吹 紬（ことぶき つむぎ）\n中野 梓（なかの あずさ）\n";
-    string contents = ch_string_from_file("../testfile.txt", NULL);
+    const char * test_str = "平沢 唯（ひらさわ ゆい）\n田井中 律（たいなか りつ）\n秋山 澪（あきやま みお）\n琴吹 紬（ことぶき つむぎ）\n中野 梓（なかの あずさ）\n";
+    char *contents = ch_string_from_file("../testfile.txt", NULL);
     ck_assert(contents != NULL);
     ck_assert_str_eq(contents, test_str);
     ch_free_string(&contents);

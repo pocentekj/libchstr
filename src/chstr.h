@@ -10,12 +10,10 @@
 
 #include <klib/kvec.h>
 
-typedef char *string;
-
 /**
  * This function takes pointer to string - it's useful for `deferred` callback.
  */
-static inline void ch_free_string(string *s) {
+static inline void ch_free_string(char **s) {
     if (!s || !*s) return;
     free(*s);
     *s = NULL;
@@ -24,11 +22,11 @@ static inline void ch_free_string(string *s) {
 /**
  * Returns width as visible columns.
  */
-static inline size_t ch_string_width(const string s) {
+static inline size_t ch_string_width(const char *s) {
     return u8_strwidth((const uint8_t *)s, "UTF-8");
 }
 
-static inline bool ch_string_utf8_valid(const string s) {
+static inline bool ch_string_utf8_valid(const char *s) {
     const uint8_t *txt = (const uint8_t *)s;
     return u8_check(txt, u8_strlen(txt)) == NULL;
 }
@@ -39,25 +37,25 @@ static inline bool ch_string_utf8_valid(const string s) {
  * Returns NULL on failure, converted string on success. Returned string
  * must be released by the caller.
  */
-string ch_string_to_lowercase(const string s);
-string ch_string_to_uppercase(const string s);
+char *ch_string_to_lowercase(const char *s);
+char *ch_string_to_uppercase(const char *s);
 
 /**
  * Center string `s` according to max width `w` and store in `out`.
  * `out` must be released by the caller after use.
  */
-int ch_string_center(const string s, size_t w, string *out);
+int ch_string_center(const char *s, size_t w, char **out);
 
 /**
  * Truncate in place string `s` to visible columns `maxcols`.
  * Returns 'true' if string has been modified, `false` otherwise.
  */
-bool ch_string_truncate(string s, size_t maxcols);
+bool ch_string_truncate(char *s, size_t maxcols);
 
 /**
  * Check if `s` starts with `search`.
  */
-bool ch_starts_with(const string s, const string search);
+bool ch_starts_with(const char *s, const char *search);
 
 /**
  * Read entire file on `path` into string.
@@ -69,10 +67,10 @@ bool ch_starts_with(const string s, const string search);
  * Returns pointer to string on success, NULL otherwise. Note, that the pointer
  * returned must be released by calling `free` (or `free_string(&ptr)`).
  */
-string ch_string_from_file(const string path, size_t *max_size);
+char *ch_string_from_file(const char *path, size_t *max_size);
 
 typedef struct {
-    kvec_t(string) data;
+    kvec_t(char *) data;
 } string_array;
 
 string_array *ch_string_array_new(void);
@@ -88,7 +86,7 @@ static inline size_t ch_string_array_len(const string_array *arr) {
     return arr ? kv_size(arr->data) : 0;
 }
 
-static inline string ch_string_array_at(const string_array *arr, size_t i) {
+static inline char *ch_string_array_at(const string_array *arr, size_t i) {
     assert(arr);
     return (arr && i < kv_size(arr->data)) ? kv_A(arr->data, i) : NULL;
 }
@@ -98,13 +96,13 @@ static inline string ch_string_array_at(const string_array *arr, size_t i) {
  * Returns `true` on success, `false` on error. `errno` may be set by underlying
  * functions, such as `fopen`.
  */
-bool ch_read_lines(string path, string_array *out);
+bool ch_read_lines(const char *path, string_array *out);
 
 /**
  * A set of functions to parse numbers from strings. All of them returns `true`
  * on successful conversion and `false` on error, and store output in `dest` of
  * appropriate type.
  */
-bool ch_parse_double(const string s, double *dest);
-bool ch_parse_ll(const string s, long long *dest);
-bool ch_parse_int(const string s, int *dest);
+bool ch_parse_double(const char *s, double *dest);
+bool ch_parse_ll(const char *s, long long *dest);
+bool ch_parse_int(const char *s, int *dest);
