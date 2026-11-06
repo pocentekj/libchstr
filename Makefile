@@ -18,4 +18,4 @@ check: $(BUILDDIR)/build.ninja
 	meson test -C "$(BUILDDIR)"
 
 clean:
-	rm -rf "$(BUILDDIR)" .cache
+	rm -rf "$(BUILDDIR)" release .cache

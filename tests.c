@@ -133,7 +133,7 @@ END_TEST
 
 // clang-format on
 
-Suite *dysk_c_suite(void) {
+Suite *chstr_suite(void) {
     Suite *s = suite_create("chstr");
     TCase *tc_core = tcase_create("Core");
 
@@ -153,7 +153,7 @@ Suite *dysk_c_suite(void) {
 }
 
 int main(void) {
-    Suite *s = dysk_c_suite();
+    Suite *s = chstr_suite();
     SRunner *sr = srunner_create(s);
 
     srunner_run_all(sr, CK_VERBOSE);
